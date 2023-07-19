@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "firefox-bookmarks"
+version = "0.1.0"
+description = "Manage your Firefox bookmarks with ease"
+authors = ["Aditya Rajput <adiraj20072002@gmail.com>"]
+license = "AGPL-3.0-or-later"
+readme = "README.md"
+packages = [{include = "firefox_bookmarks"}]
+repository = "https://github.com/BURG3R5/firefox-bookmarks"
+documentation = "https://github.com/BURG3R5/firefox-bookmarks"
+keywords = ["firefox", "bookmarks", "browser", "util"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Natural Language :: English",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Database",
+    "Topic :: Internet :: WWW/HTTP :: Browsers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+peewee = "^3.16.2"
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.2.7"
+pre-commit = "^3.3.3"
+pytest = "^7.4.0"
+pytest-mock = "^3.11.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
