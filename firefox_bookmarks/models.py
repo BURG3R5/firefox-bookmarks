@@ -112,3 +112,12 @@ def connect_firefox_models(
         look_under_path=look_under_path,
         criterion=criterion,
     )
+
+
+__all__ = [
+    'connect_firefox_models',
+    'FirefoxBookmark',
+    'FirefoxPlace',
+    'FirefoxOrigin',
+    'ProfileCriterion',  # For convenience
+]

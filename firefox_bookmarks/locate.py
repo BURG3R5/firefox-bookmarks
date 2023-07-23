@@ -70,3 +70,10 @@ def _last_modified(file_path: str) -> float:
 
 def _file_size(file_path: str) -> float:
     return os.path.getsize(file_path)
+
+
+__all__ = [
+    'locate_db',
+    'locate_db_candidates',
+    'ProfileCriterion',  # For convenience
+]

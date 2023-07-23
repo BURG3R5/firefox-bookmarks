@@ -6,3 +6,8 @@ class ProfileCriterion(Enum):
 
     LARGEST = "Choose the profile with the largest Places DB"
     LATEST = "Choose the profile with the most recent changes in its Places DB"
+
+
+__all__ = [
+    'ProfileCriterion',
+]
