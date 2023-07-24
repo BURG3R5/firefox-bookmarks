@@ -1,6 +1,24 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - examples/**
+      - firefox_bookmarks/**
+      - tests/**
+      - .gitignore
+      - .pre-commit-config.yaml
+      - pyproject.toml
+      - pytest.ini
+  pull_request:
+    paths:
+      - examples/**
+      - firefox_bookmarks/**
+      - tests/**
+      - .gitignore
+      - .pre-commit-config.yaml
+      - pyproject.toml
+      - pytest.ini
 
 jobs:
   yapf:
