@@ -1,4 +1,4 @@
-from firefox_bookmarks import connect_to_places_db
+from firefox_bookmarks.connect import connect_to_places_db
 
 database = connect_to_places_db()
 
