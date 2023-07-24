@@ -1,22 +1,12 @@
-from firefox_bookmarks.models import (
-    FirefoxBookmark,
-    FirefoxPlace,
-    ProfileCriterion,
-    connect_firefox_models,
-)
+from firefox_bookmarks.models import *
 
 connect_firefox_models(criterion=ProfileCriterion.LARGEST)
 
-bookmarks = FirefoxBookmark \
-    .select(
-    FirefoxBookmark.title,
-    FirefoxPlace.title,
-    FirefoxPlace.url,
-) \
-    .join(FirefoxPlace) \
-    .where((FirefoxBookmark.type == 1) & (FirefoxBookmark.place.url.startswith("https://github.com"))) \
+bookmarks = FirefoxPlace \
+    .select() \
+    .join(FirefoxBookmark) \
+    .where(FirefoxPlace.url.contains("https://github.com")) \
     .execute()
 
 for bookmark in bookmarks:
-    print(f"Title: {bookmark.place.title or bookmark.title}\n"
-          f"URL: {bookmark.place.url}\n")
+    print(f"Title: {bookmark.title}\nURL: {bookmark.url}\n")

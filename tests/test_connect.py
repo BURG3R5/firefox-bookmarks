@@ -2,7 +2,7 @@ import pytest
 from peewee import SqliteDatabase
 from pytest_mock import MockerFixture
 
-from firefox_bookmarks import ProfileCriterion, connect_to_places_db
+from firefox_bookmarks.connect import *
 
 
 class TestConnect:

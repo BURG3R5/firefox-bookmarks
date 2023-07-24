@@ -1,8 +1,11 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from firefox_bookmarks.constants import ProfileCriterion
-from firefox_bookmarks.models import connect_firefox_models, database_obj
+from firefox_bookmarks.models import (
+    ProfileCriterion,
+    connect_firefox_models,
+    database_obj,
+)
 
 
 class TestConnectFirefoxModels:

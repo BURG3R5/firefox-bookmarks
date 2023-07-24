@@ -8,6 +8,30 @@ Manage your Firefox bookmarks with ease
 pip install firefox-bookmarks
 ```
 
+## usage
+
+Import and initialize models:
+
+```python
+from firefox_bookmarks.models import *
+
+# You can pass a `ProfileCriterion` to choose from multiple profiles
+connect_firefox_models(criterion=ProfileCriterion.LARGEST)
+```
+
+Query as you would in peewee (or Django or SQLAlchemy)
+
+```python
+github_bookmarks = FirefoxPlace \
+    .select() \
+    .join(FirefoxBookmark) \
+    .where(FirefoxPlace.url.contains("https://github.com")) \
+    .execute()
+
+for bookmark in github_bookmarks:
+    print(f"Title: {bookmark.title}\nURL: {bookmark.url}\n")
+```
+
 ## examples
 
 See [the examples directory](https://github.com/BURG3R5/firefox-bookmarks/tree/main/examples)

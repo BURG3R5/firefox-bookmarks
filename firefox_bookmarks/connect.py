@@ -34,3 +34,9 @@ def connect_to_places_db(
     database.connect(reuse_if_open=True)
 
     return database
+
+
+__all__ = [
+    'connect_to_places_db',
+    'ProfileCriterion',  # For convenience
+]

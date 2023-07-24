@@ -1,7 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from firefox_bookmarks import ProfileCriterion, locate_db
+from firefox_bookmarks.locate import *
 
 
 class TestLocate:
