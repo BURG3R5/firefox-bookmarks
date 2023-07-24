@@ -36,6 +36,10 @@ for bookmark in github_bookmarks:
 
 See [the examples directory](https://github.com/BURG3R5/firefox-bookmarks/tree/main/examples)
 
+## contributing
+
+Want to fix a bug, add a feature, or improve documentation? Awesome! Read up on our [guidelines for contributing](https://github.com/BURG3R5/firefox-bookmarks/blob/main/.github/CONTRIBUTING.md) and then visit our [/contribute page](https://github.com/BURG3R5/firefox-bookmarks/contribute) to find good first issues! Pull requests are always welcome!
+
 ## license
 
 Copyright (C) 2023 Aditya Rajput & other contributors
