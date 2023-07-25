@@ -83,10 +83,12 @@ class Bookmark(Model):
 
     @property
     def is_bookmark(self) -> bool:
+        """Returns whether the object represents a bookmark"""
         return self.type == BOOKMARK_TYPE
 
     @property
     def is_folder(self) -> bool:
+        """Returns whether the object represents a folder"""
         return self.type == FOLDER_TYPE
 
     def __str__(self) -> str:
@@ -101,10 +103,15 @@ class Bookmark(Model):
 
     @property
     def path(self) -> str:
+        """Generates the 'path' of the object, which is a string resembling a *nix path leading thru parents back to the root
+
+        Returns:
+            str: The 'path' of the bookmark/folder
+        """
         curr: Bookmark = self
         path = ""
 
-        while curr.parent_id != 0 and curr.parent_id is not None:
+        while curr.parent_id != 0 and curr.parent_id is not None:  # type: ignore
             path = repr(curr) + path
             curr = curr.parent  # type: ignore
 
