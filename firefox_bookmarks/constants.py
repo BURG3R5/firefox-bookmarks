@@ -8,6 +8,11 @@ class ProfileCriterion(Enum):
     LATEST = "Choose the profile with the most recent changes in its Places DB"
 
 
+BOOKMARK_TYPE = 1
+FOLDER_TYPE = 2
+
 __all__ = [
     'ProfileCriterion',
+    'BOOKMARK_TYPE',
+    'FOLDER_TYPE',
 ]
