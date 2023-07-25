@@ -2,11 +2,13 @@ import os
 from tempfile import gettempdir
 from typing import Iterable
 
-from peewee import JOIN, DoesNotExist, fn
+from peewee import JOIN, DoesNotExist, Expression, Field, Model, ModelAlias, fn
 
 from .bookmark import Bookmark, connect_bookmark_model
 from .constants import BATCH_SIZE, BOOKMARK_TYPE, FOLDER_TYPE, ProfileCriterion
 from .models import FirefoxBookmark, FirefoxOrigin, FirefoxPlace, connect_firefox_models
+
+FieldOrModel = Model | ModelAlias | Field
 
 
 class FirefoxBookmarks:
@@ -156,17 +158,29 @@ class FirefoxBookmarks:
                 ).execute()
         # endregion
 
-    def bookmarks(self) -> Iterable[Bookmark]:
-        return Bookmark \
-            .select() \
-            .where((Bookmark.type == BOOKMARK_TYPE)) \
-            .execute()
+    def bookmarks(
+        self,
+        *,
+        fields: list[FieldOrModel] = [],
+        query: Expression | None = None,
+    ) -> Iterable[Bookmark]:
+        final_query: Expression = (Bookmark.type == BOOKMARK_TYPE)
+        if query is not None:
+            final_query &= query
 
-    def folders(self) -> Iterable[Bookmark]:
-        return Bookmark \
-            .select() \
-            .where(Bookmark.type == FOLDER_TYPE) \
-            .execute()
+        return Bookmark.select(*fields).where(final_query).execute()
+
+    def folders(
+        self,
+        *,
+        fields: list[FieldOrModel] = [],
+        query: Expression | None = None,
+    ) -> Iterable[Bookmark]:
+        final_query: Expression = (Bookmark.type == FOLDER_TYPE)
+        if query is not None:
+            final_query &= query
+
+        return Bookmark.select(*fields).where(final_query).execute()
 
     def disconnect(self):
         self._database.close()
