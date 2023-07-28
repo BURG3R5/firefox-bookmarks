@@ -283,6 +283,38 @@ class FirefoxBookmarks:
     ) -> int:
         return Bookmark.update(data).where(query).execute()
 
+    def diff(self) -> list[str]:
+        """Generates diff between current state of our duplicate database, and the chosen Places database
+
+        Returns:
+            List of `guid`s, representing the bookmarks that have changed
+        """
+
+        bookmarks = list(
+            FirefoxBookmark \
+                .select(FirefoxBookmark.guid) \
+                .execute()
+        )
+        differing_bookmarks = []
+
+        for bk in bookmarks:
+            original = FirefoxBookmark \
+                .select(*self._TRANSLATION["SEPARATE"]["TO"]) \
+                .where(FirefoxBookmark.guid == bk.guid) \
+                .tuples() \
+                .first()
+
+            changed = Bookmark \
+                .select(*self._TRANSLATION["SEPARATE"]["FROM"]) \
+                .where(Bookmark.guid == bk.guid) \
+                .tuples() \
+                .first()
+
+            if original != changed:
+                differing_bookmarks.append(bk.guid)
+
+        return differing_bookmarks
+
     def commit(self):
         self._back_up_places()
 
