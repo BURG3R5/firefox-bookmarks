@@ -318,10 +318,25 @@ class FirefoxBookmarks:
     def commit(self):
         self._back_up_places()
 
-        max_id = FirefoxBookmark.select(fn.MAX(Bookmark.id)).scalar()
+        diff_guids = self.diff()
 
         with self._places_database.atomic():
-            raise NotImplementedError
+            for guid in diff_guids:
+                source_tuple = Bookmark \
+                    .select(*self._TRANSLATION["SEPARATE"]["FROM"]) \
+                    .where(Bookmark.guid == guid) \
+                    .tuples() \
+                    .first()
+
+                source_dict = {
+                    field: value
+                    for field, value in zip(
+                        self._TRANSLATION["SEPARATE"]["TO"],
+                        source_tuple,
+                    )
+                }
+
+                FirefoxBookmark.replace(source_dict).execute()
 
     def _back_up_places(self):
         file_name = f"backup-{int(time())}.sqlite"
