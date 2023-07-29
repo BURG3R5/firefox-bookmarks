@@ -6,7 +6,7 @@ fb = FirefoxBookmarks()
 fb.connect(criterion=ProfileCriterion.LARGEST)
 
 count_updated = fb.update(
-    query=Bookmark.title.contains("Wikikipedia"),
+    where=Bookmark.title.contains("Wikikipedia"),
     data={
         Bookmark.title: fn.REPLACE(Bookmark.title, "Wikikipedia", "Wikipedia"),
     },

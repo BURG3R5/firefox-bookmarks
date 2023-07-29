@@ -6,7 +6,7 @@ fb = FirefoxBookmarks()
 fb.connect(criterion=ProfileCriterion.LARGEST)
 
 count_updated = fb.update(
-    query=Bookmark.title.contains("Wikipedia"),
+    where=Bookmark.title.contains("Wikipedia"),
     data={
         Bookmark.title: fn.REPLACE(Bookmark.title, "Wikipedia", "Wikikipedia"),
     },
@@ -16,7 +16,7 @@ fb.commit()
 
 bookmarks = fb.bookmarks(
     fields=(Bookmark.id, Bookmark.title),
-    query=Bookmark.title.contains("Wikikipedia"),
+    where=Bookmark.title.contains("Wikikipedia"),
 )
 
 for bookmark in bookmarks:

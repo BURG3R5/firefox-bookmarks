@@ -13,7 +13,7 @@ Example:
 
     # Get all the GitHub bookmarks,
     >>> github_bookmarks = fb.bookmarks(
-    ...     query=Bookmark.url.contains("mozilla.org"),
+    ...     where=Bookmark.url.contains("mozilla.org"),
     ... )
 
     # and print their URLs.
@@ -48,14 +48,12 @@ from tempfile import gettempdir
 from time import time
 from typing import Any, Iterable
 
-from peewee import JOIN, DoesNotExist, Expression, Field, Model, ModelAlias, fn
+from peewee import JOIN, DoesNotExist, Expression, Field, ModelSelect, fn
 
 from .bookmark import Bookmark, connect_bookmark_model
 from .constants import BATCH_SIZE, BOOKMARK_TYPE, FOLDER_TYPE, ProfileCriterion
 from .locate import locate_db
 from .models import FirefoxBookmark, FirefoxOrigin, FirefoxPlace, connect_firefox_models
-
-FieldOrModel = Model | ModelAlias | Field
 
 
 class FirefoxBookmarks:
@@ -74,7 +72,7 @@ class FirefoxBookmarks:
 
         # Get all the GitHub bookmarks,
         >>> github_bookmarks = fb.bookmarks(
-        ...     query=Bookmark.url.contains("mozilla.org"),
+        ...     where=Bookmark.url.contains("mozilla.org"),
         ... )
 
         # and print their URLs.
@@ -337,67 +335,90 @@ class FirefoxBookmarks:
                     fields=self._TRANSLATION["COMBINE"]["TO"],
                 ).execute()
 
-    def bookmarks(
+    def select(
         self,
         *,
-        fields: Iterable[FieldOrModel] = [],
-        query: Expression | None = None,
+        fields: Iterable[Field] = [],
+        where: Expression | None = None,
     ) -> Iterable[Bookmark]:
-        """Executes a SELECT query over only the rows representing bookmarks
+        """Executes a SELECT query
 
         Args:
             fields: Iterable of fields to select. Defaults to all.
-            query: An `Expression` used in the WHERE clause. Defaults to `None`.
+            where: An `Expression` used in the WHERE clause. Defaults to `None`.
 
         Returns:
-            Iterable of bookmarks matching the SELECT query
+            Iterable of bookmarks and folders matching the SELECT query
         """
 
-        final_query: Expression = (Bookmark.type == BOOKMARK_TYPE)
-        if query is not None:
-            final_query &= query
+        selected: ModelSelect = Bookmark.select(*fields)
 
-        return Bookmark.select(*fields).where(final_query).execute()
+        if where is not None:
+            selected = selected.where(where)
 
-    def folders(
-        self,
-        *,
-        fields: Iterable[FieldOrModel] = [],
-        query: Expression | None = None,
-    ) -> Iterable[Bookmark]:
-        """Executes a SELECT query over only the rows representing folders
-
-        Args:
-            fields: Iterable of fields to select. Defaults to all.
-            query: An `Expression` used in the WHERE clause. Defaults to `None`.
-
-        Returns:
-            Iterable of folders matching the SELECT query
-        """
-
-        final_query: Expression = (Bookmark.type == FOLDER_TYPE)
-        if query is not None:
-            final_query &= query
-
-        return Bookmark.select(*fields).where(final_query).execute()
+        return selected.execute()
 
     def update(
         self,
         *,
-        query: Expression | None = None,
+        where: Expression | None = None,
         data: dict[Field, Any],
     ) -> int:
         """Executes an UPDATE query
 
         Args:
             data: A `dict` from fields of `Bookmark` to new values
-            query: An `Expression` used in the WHERE clause. Defaults to `None`.
+            where: An `Expression` used in the WHERE clause. Defaults to `None`.
 
         Returns:
             Number of rows affected by the update
         """
 
-        return Bookmark.update(data).where(query).execute()
+        return Bookmark.update(data).where(where).execute()
+
+    def bookmarks(
+        self,
+        *,
+        fields: Iterable[Field] = [],
+        where: Expression | None = None,
+    ) -> Iterable[Bookmark]:
+        """Executes a SELECT query over only the rows representing bookmarks
+
+        Args:
+            fields: Iterable of fields to select. Defaults to all.
+            where: An `Expression` used in the WHERE clause. Defaults to `None`.
+
+        Returns:
+            Iterable of bookmarks matching the SELECT query
+        """
+
+        final_where: Expression = (Bookmark.type == BOOKMARK_TYPE)
+        if where is not None:
+            final_where &= where
+
+        return Bookmark.select(*fields).where(final_where).execute()
+
+    def folders(
+        self,
+        *,
+        fields: Iterable[Field] = [],
+        where: Expression | None = None,
+    ) -> Iterable[Bookmark]:
+        """Executes a SELECT query over only the rows representing folders
+
+        Args:
+            fields: Iterable of fields to select. Defaults to all.
+            where: An `Expression` used in the WHERE clause. Defaults to `None`.
+
+        Returns:
+            Iterable of folders matching the SELECT query
+        """
+
+        final_where: Expression = (Bookmark.type == FOLDER_TYPE)
+        if where is not None:
+            final_where &= where
+
+        return Bookmark.select(*fields).where(final_where).execute()
 
     def diff(self) -> list[str]:
         """Generates diff between current state of our duplicate database, and the chosen Places database
