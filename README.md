@@ -1,23 +1,6 @@
-# firefox-bookmarks
+![CI Status](https://img.shields.io/github/actions/workflow/status/BURG3R5/firefox-bookmarks/ci.yml?branch=main&style=flat-square) ![PyPI](https://img.shields.io/pypi/v/firefox-bookmarks?style=flat-square) ![License - AGPL v3 or later](https://img.shields.io/pypi/l/firefox-bookmarks?style=flat-square) ![Code style: YAPF](https://img.shields.io/badge/code%20style-yapf-blue?style=flat-square) ![Code style: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat-square)
 
-<p align="center">
-    <a href="https://github.com/BURG3R5/firefox-bookmarks/actions/workflows/ci.yml">
-        <img alt="CI Status" src="https://img.shields.io/github/actions/workflow/status/BURG3R5/firefox-bookmarks/ci.yml?branch=main&style=flat-square">
-    </a>
-    <a href="https://github.com/BURG3R5/firefox-bookmarks/blob/main/LICENSE">
-        <img alt="License - AGPL v3 or later" src="https://img.shields.io/pypi/l/firefox-bookmarks?style=flat-square">
-    </a>
-    <a href="https://pypi.org/project/firefox-bookmarks/">
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/firefox-bookmarks?style=flat-square">
-    </a>
-    <a href="https://github.com/google/yapf">
-        <img alt="Code style: YAPF" src="https://img.shields.io/badge/code%20style-yapf-blue?style=flat-square">
-    </a>
-    </a>
-    <a href="https://pycqa.github.io/isort">
-        <img alt="Code style: isort" src="https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat-square">
-    </a>
-</p>
+# firefox-bookmarks
 
 Manage your Firefox bookmarks with ease
 
