@@ -1,3 +1,47 @@
+"""A Python library to manage Firefox bookmarks with ease.
+
+Contains the `FirefoxBookmarks` class, which provides a high-level API for
+working with Firefox bookmarks, hiding the lower-level implementation details
+and offering simplified methods for common operations.
+
+Example:
+    >>> from firefox_bookmarks import *
+    >>> fb = FirefoxBookmarks()
+
+    # You can pass a `ProfileCriterion` to choose from multiple profiles.
+    >>> fb.connect(criterion=ProfileCriterion.LARGEST)
+
+    # Get all the GitHub bookmarks,
+    >>> github_bookmarks = fb.bookmarks(
+    ...     query=Bookmark.url.contains("mozilla.org"),
+    ... )
+
+    # and print their URLs.
+    >>> for bookmark in github_bookmarks:
+    ...     print(bookmark.url)
+    ... # doctest: +ELLIPSIS
+    https://support.mozilla.org/products/firefox
+    ...
+
+    # Remember to clean up after yourself!
+    >>> fb.disconnect()
+
+Copyright (C) 2023 Aditya Rajput & other contributors
+"""
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 import os
 import shutil
 from tempfile import gettempdir
@@ -15,6 +59,48 @@ FieldOrModel = Model | ModelAlias | Field
 
 
 class FirefoxBookmarks:
+    """Class that helps manage Firefox bookmarks with ease.
+
+    Provides a high-level API for working with Firefox bookmarks, hiding the
+    lower-level implementation details and offering simplified methods for
+    common operations.
+
+    Example:
+        >>> from firefox_bookmarks import *
+        >>> fb = FirefoxBookmarks()
+
+        # You can pass a `ProfileCriterion` to choose from multiple profiles.
+        >>> fb.connect(criterion=ProfileCriterion.LARGEST)
+
+        # Get all the GitHub bookmarks,
+        >>> github_bookmarks = fb.bookmarks(
+        ...     query=Bookmark.url.contains("mozilla.org"),
+        ... )
+
+        # and print their URLs.
+        >>> for bookmark in github_bookmarks:
+        ...     print(bookmark.url)
+        ... # doctest: +ELLIPSIS
+        https://support.mozilla.org/products/firefox
+        ...
+
+        # Remember to clean up after yourself!
+        >>> fb.disconnect()
+
+    Attributes:
+        connect: Duplicates the Places database and connects to it
+        disconnect: Disconnects and cleans up
+
+        select: Executes a SELECT query
+        update: Executes an UPDATE query
+
+        bookmarks: Executes a SELECT query over the bookmarks
+        folders: Executes a SELECT query over the folders
+
+        diff: Generates diff between current state and the original Places database
+        commit: Commits the updated bookmarks to the Places database
+        restore_latest_backup: Finds the latest backup and copies it to the Places database
+    """
 
     def __init__(self):
         self._db_path = os.path.join(gettempdir(), 'bookmarks.sqlite')
@@ -184,7 +270,7 @@ class FirefoxBookmarks:
         look_under_path: str | None = None,
         criterion: ProfileCriterion = ProfileCriterion.LATEST,
     ):
-        """"Duplicates a Places database (chosen according to `criterion`) and connects the `Bookmark` model to it"
+        """Duplicates a Places database (chosen according to `criterion`) and connects the `Bookmark` model to it
 
         Args:
             look_under_path: Path from where to start searching. \
@@ -257,6 +343,16 @@ class FirefoxBookmarks:
         fields: Iterable[FieldOrModel] = [],
         query: Expression | None = None,
     ) -> Iterable[Bookmark]:
+        """Executes a SELECT query over only the rows representing bookmarks
+
+        Args:
+            fields: Iterable of fields to select. Defaults to all.
+            query: An `Expression` used in the WHERE clause. Defaults to `None`.
+
+        Returns:
+            Iterable of bookmarks matching the SELECT query
+        """
+
         final_query: Expression = (Bookmark.type == BOOKMARK_TYPE)
         if query is not None:
             final_query &= query
@@ -269,6 +365,16 @@ class FirefoxBookmarks:
         fields: Iterable[FieldOrModel] = [],
         query: Expression | None = None,
     ) -> Iterable[Bookmark]:
+        """Executes a SELECT query over only the rows representing folders
+
+        Args:
+            fields: Iterable of fields to select. Defaults to all.
+            query: An `Expression` used in the WHERE clause. Defaults to `None`.
+
+        Returns:
+            Iterable of folders matching the SELECT query
+        """
+
         final_query: Expression = (Bookmark.type == FOLDER_TYPE)
         if query is not None:
             final_query &= query
@@ -281,6 +387,16 @@ class FirefoxBookmarks:
         query: Expression | None = None,
         data: dict[Field, Any],
     ) -> int:
+        """Executes an UPDATE query
+
+        Args:
+            data: A `dict` from fields of `Bookmark` to new values
+            query: An `Expression` used in the WHERE clause. Defaults to `None`.
+
+        Returns:
+            Number of rows affected by the update
+        """
+
         return Bookmark.update(data).where(query).execute()
 
     def diff(self) -> list[str]:
@@ -316,6 +432,8 @@ class FirefoxBookmarks:
         return differing_bookmarks
 
     def commit(self):
+        """Commits the updated bookmarks from our duplicate database to the Places database"""
+
         self._back_up_places()
 
         diff_guids = self.diff()
@@ -344,11 +462,15 @@ class FirefoxBookmarks:
         shutil.copy(self._places_path, dest)
 
     def disconnect(self):
+        """Disconnects from databases and removes the duplicate database"""
+
+        self._places_database.close()
         self._database.close()
         os.remove(self._db_path)
+        # TODO: Also remove old backups
 
     def restore_latest_backup(self):
-        """Finds the latest backup and copies it to places.sqlite"""
+        """Finds the latest backup and copies it to the Places database"""
 
         dir_path, timestamps = self._get_backups()
         backup_path = os.path.join(
