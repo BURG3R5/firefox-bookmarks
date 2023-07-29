@@ -1,12 +1,19 @@
 from peewee import fn
 
-from firefox_bookmarks.models import *
+from firefox_bookmarks import *
 
-connect_firefox_models(criterion=ProfileCriterion.LARGEST)
+fb = FirefoxBookmarks()
+fb.connect(criterion=ProfileCriterion.LARGEST)
 
-count_updated = FirefoxBookmark \
-    .update(title=fn.REPLACE(FirefoxBookmark.title, "Wikikipedia", "Wikipedia")) \
-    .where(FirefoxBookmark.title.contains("Wikikipedia")) \
-    .execute()
+count_updated = fb.update(
+    where=Bookmark.title.contains("Wikikipedia"),
+    data={
+        Bookmark.title: fn.REPLACE(Bookmark.title, "Wikikipedia", "Wikipedia"),
+    },
+)
+
+fb.commit()
 
 print(f"REVERTED!\nNumber of bookmarks updated: {count_updated}")
+
+fb.disconnect()

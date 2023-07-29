@@ -6,6 +6,7 @@ database_obj = SqliteDatabase(None)
 
 
 class _BaseModel(Model):
+    id = IntegerField(primary_key=True)
 
     class Meta:
         database = database_obj

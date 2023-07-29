@@ -10,23 +10,23 @@ pip install firefox-bookmarks
 
 ## usage
 
-Import and initialize models:
+Import and initialize:
 
 ```python
-from firefox_bookmarks.models import *
+from firefox_bookmarks import *
+
+fb = FirefoxBookmarks()
 
 # You can pass a `ProfileCriterion` to choose from multiple profiles
-connect_firefox_models(criterion=ProfileCriterion.LARGEST)
+fb.connect(criterion=ProfileCriterion.LARGEST)
 ```
 
 Query as you would in peewee (or Django or SQLAlchemy)
 
 ```python
-github_bookmarks = FirefoxPlace \
-    .select() \
-    .join(FirefoxBookmark) \
-    .where(FirefoxPlace.url.contains("https://github.com")) \
-    .execute()
+github_bookmarks = fb.bookmarks(
+    query=Bookmark.url.contains("https://github.com"),
+)
 
 for bookmark in github_bookmarks:
     print(f"Title: {bookmark.title}\nURL: {bookmark.url}\n")
