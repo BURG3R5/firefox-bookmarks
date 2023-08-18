@@ -1,11 +1,13 @@
-name: Formatting
+name: formatting
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
-  check-formatting:
-    name: Check formatting
-
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

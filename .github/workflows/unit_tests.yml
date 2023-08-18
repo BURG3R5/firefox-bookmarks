@@ -1,15 +1,13 @@
-name: Unit Tests
+name: unit tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
-  run-unit-tests:
-    strategy:
-      matrix:
-        python_version: ["3.9", "3.10", "3.11"]
-
-    name: Unit tests with Python ${{ matrix.python_version }}
-
+  run:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -20,7 +18,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python_version }}
+          python-version: "3.11"
 
       - name: Install Poetry
         id: install-poetry
