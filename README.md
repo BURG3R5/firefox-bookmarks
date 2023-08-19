@@ -1,4 +1,4 @@
-![CI Status](https://img.shields.io/github/actions/workflow/status/BURG3R5/firefox-bookmarks/ci.yml?branch=main&style=flat-square) ![PyPI](https://img.shields.io/pypi/v/firefox-bookmarks?style=flat-square) ![License - AGPL v3 or later](https://img.shields.io/pypi/l/firefox-bookmarks?style=flat-square) ![Code style: YAPF](https://img.shields.io/badge/code%20style-yapf-blue?style=flat-square) ![Code style: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat-square)
+![CI Status](https://img.shields.io/github/actions/workflow/status/BURG3R5/firefox-bookmarks/integration_tests.yml?branch=main&style=flat-square) ![PyPI](https://img.shields.io/pypi/v/firefox-bookmarks?style=flat-square) ![License - AGPL v3 or later](https://img.shields.io/pypi/l/firefox-bookmarks?style=flat-square) ![Code style: YAPF](https://img.shields.io/badge/code%20style-yapf-blue?style=flat-square) ![Code style: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat-square)
 
 # firefox-bookmarks
 
