@@ -1,0 +1,37 @@
+name: unit tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        id: install-poetry
+        uses: snok/install-poetry@v1
+
+      - name: Install dependencies
+        id: poetry-install
+        run: |
+          poetry config virtualenvs.in-project true
+          poetry install --no-interaction
+
+      - name: Run tests and report coverage
+        id: unit-tests-and-coverage
+        run: |
+          poetry run coverage run --source firefox_bookmarks -m pytest --ignore=tests/integration_tests/
+          poetry run coverage report

@@ -1,0 +1,5 @@
+[Get Help](https://support.mozilla.org/products/firefox)
+[Customize Firefox](https://support.mozilla.org/kb/customize-firefox-controls-buttons-and-toolbars?utm_source=firefox-browser&utm_medium=default-bookmarks&utm_campaign=customize)
+[Getting Started](https://www.mozilla.org/firefox/?utm_medium=firefox-desktop&utm_source=bookmarks-toolbar&utm_campaign=new-users&utm_content=-global)
+[Get Involved](https://www.mozilla.org/contribute/)
+[About Us](https://www.mozilla.org/about/)
