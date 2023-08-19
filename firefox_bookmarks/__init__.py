@@ -48,7 +48,20 @@ from tempfile import gettempdir
 from time import time
 from typing import Any, Iterable
 
-from peewee import JOIN, DoesNotExist, Expression, Field, ModelSelect, fn
+from peewee import (
+    JOIN,
+    CharField,
+    DoesNotExist,
+    Expression,
+    Field,
+    FloatField,
+    Function,
+    IntegerField,
+    ModelSelect,
+    StringExpression,
+    TextField,
+    fn,
+)
 
 from .bookmark import Bookmark, connect_bookmark_model
 from .constants import BATCH_SIZE, BOOKMARK_TYPE, FOLDER_TYPE, ProfileCriterion
@@ -499,6 +512,52 @@ class FirefoxBookmarks:
             final_where &= where
 
         return Bookmark.select(*fields).where(final_where).execute()
+
+    def str_update(
+        self,
+        *,
+        field: CharField | TextField,
+        where: Expression,
+        updated: str | StringExpression | Function,
+    ) -> int:
+        """Executes an UPDATE query on a string field
+
+        Args:
+            field: The `Field` to update
+            where: An `Expression` used in the WHERE clause
+            updated: The field's updated value, or a `peewee.Function` that defines the transform
+
+        Returns:
+            Number of rows affected by the update
+        """
+
+        return self.update(
+            where=where,
+            data={field: updated},
+        )
+
+    def num_update(
+        self,
+        *,
+        field: IntegerField | FloatField,
+        where: Expression,
+        updated: int | float | Expression,
+    ) -> int:
+        """Executes an UPDATE query on a numerical field
+
+        Args:
+            field: The `Field` to update
+            where: An `Expression` used in the WHERE clause
+            updated: The field's updated value
+
+        Returns:
+            Number of rows affected by the update
+        """
+
+        return self.update(
+            where=where,
+            data={field: updated},
+        )
 
     def diff(self) -> list[str]:
         """Generates diff between current state of our duplicate database, and the chosen Places database
