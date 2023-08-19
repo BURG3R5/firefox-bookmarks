@@ -183,82 +183,162 @@ class FirefoxBookmarks:
                 ),
             },
             "SEPARATE": {
-                "FROM": (
-                    Bookmark.id,
-                    Bookmark.title,
-                    # Bookmark.url,
-                    # Bookmark.description,
-                    Bookmark.type,
-                    Bookmark.parent,
-                    Bookmark.place_id,
-                    # Bookmark.origin_id,
-                    Bookmark.date_added,
-                    Bookmark.folder_type,
-                    # Bookmark.foreign_count,
-                    Bookmark.guid,
-                    # Bookmark.hidden,
-                    Bookmark.keyword_id,
-                    Bookmark.last_modified,
-                    # Bookmark.last_visit_date,
-                    # Bookmark.origin_alt_frecency,
-                    # Bookmark.origin_frecency,
-                    # Bookmark.origin_host,
-                    # Bookmark.origin_prefix,
-                    # Bookmark.origin_recalc_alt_frecency,
-                    # Bookmark.origin_recalc_frecency,
-                    # Bookmark.place_alt_frecency,
-                    # Bookmark.place_frecency,
-                    # Bookmark.place_guid,
-                    # Bookmark.place_recalc_alt_frecency,
-                    # Bookmark.place_recalc_frecency,
-                    # Bookmark.preview_image_url,
-                    Bookmark.position,
-                    # Bookmark.rev_host,
-                    # Bookmark.site_name,
-                    Bookmark.sync_change_counter,
-                    Bookmark.sync_status,
-                    # Bookmark.typed,
-                    # Bookmark.url_hash,
-                    # Bookmark.visit_count,
-                ),
-                "TO": (
-                    FirefoxBookmark.id,
-                    FirefoxBookmark.title,
-                    # FirefoxPlace.url,
-                    # FirefoxPlace.description,
-                    FirefoxBookmark.type,
-                    FirefoxBookmark.parent,
-                    FirefoxBookmark.fk,
-                    # FirefoxPlace.origin,
-                    FirefoxBookmark.date_added,
-                    FirefoxBookmark.folder_type,
-                    # FirefoxPlace.foreign_count,
-                    FirefoxBookmark.guid,
-                    # FirefoxPlace.hidden,
-                    FirefoxBookmark.keyword_id,
-                    FirefoxBookmark.last_modified,
-                    # FirefoxPlace.last_visit_date,
-                    # FirefoxOrigin.alt_frecency,
-                    # FirefoxOrigin.frecency,
-                    # FirefoxOrigin.host,
-                    # FirefoxOrigin.prefix,
-                    # FirefoxOrigin.recalc_alt_frecency,
-                    # FirefoxOrigin.recalc_frecency,
-                    # FirefoxPlace.alt_frecency,
-                    # FirefoxPlace.frecency,
-                    # FirefoxPlace.guid,
-                    # FirefoxPlace.recalc_alt_frecency,
-                    # FirefoxPlace.recalc_frecency,
-                    # FirefoxPlace.preview_image_url,
-                    FirefoxBookmark.position,
-                    # FirefoxPlace.rev_host,
-                    # FirefoxPlace.site_name,
-                    FirefoxBookmark.sync_change_counter,
-                    FirefoxBookmark.sync_status,
-                    # FirefoxPlace.typed,
-                    # FirefoxPlace.url_hash,
-                    # FirefoxPlace.visit_count,
-                ),
+                "moz_bookmarks": {
+                    "FROM": (
+                        Bookmark.id,
+                        Bookmark.title,
+                        # Bookmark.url,
+                        # Bookmark.description,
+                        Bookmark.type,
+                        Bookmark.parent,
+                        Bookmark.place_id,
+                        # Bookmark.origin_id,
+                        Bookmark.date_added,
+                        Bookmark.folder_type,
+                        # Bookmark.foreign_count,
+                        Bookmark.guid,
+                        # Bookmark.hidden,
+                        Bookmark.keyword_id,
+                        Bookmark.last_modified,
+                        # Bookmark.last_visit_date,
+                        # Bookmark.origin_alt_frecency,
+                        # Bookmark.origin_frecency,
+                        # Bookmark.origin_host,
+                        # Bookmark.origin_prefix,
+                        # Bookmark.origin_recalc_alt_frecency,
+                        # Bookmark.origin_recalc_frecency,
+                        # Bookmark.place_alt_frecency,
+                        # Bookmark.place_frecency,
+                        # Bookmark.place_guid,
+                        # Bookmark.place_recalc_alt_frecency,
+                        # Bookmark.place_recalc_frecency,
+                        # Bookmark.preview_image_url,
+                        Bookmark.position,
+                        # Bookmark.rev_host,
+                        # Bookmark.site_name,
+                        Bookmark.sync_change_counter,
+                        Bookmark.sync_status,
+                        # Bookmark.typed,
+                        # Bookmark.url_hash,
+                        # Bookmark.visit_count,
+                    ),
+                    "TO": (
+                        FirefoxBookmark.id,
+                        FirefoxBookmark.title,
+                        # FirefoxPlace.url,
+                        # FirefoxPlace.description,
+                        FirefoxBookmark.type,
+                        FirefoxBookmark.parent,
+                        FirefoxBookmark.fk,
+                        # FirefoxPlace.origin,
+                        FirefoxBookmark.date_added,
+                        FirefoxBookmark.folder_type,
+                        # FirefoxPlace.foreign_count,
+                        FirefoxBookmark.guid,
+                        # FirefoxPlace.hidden,
+                        FirefoxBookmark.keyword_id,
+                        FirefoxBookmark.last_modified,
+                        # FirefoxPlace.last_visit_date,
+                        # FirefoxOrigin.alt_frecency,
+                        # FirefoxOrigin.frecency,
+                        # FirefoxOrigin.host,
+                        # FirefoxOrigin.prefix,
+                        # FirefoxOrigin.recalc_alt_frecency,
+                        # FirefoxOrigin.recalc_frecency,
+                        # FirefoxPlace.alt_frecency,
+                        # FirefoxPlace.frecency,
+                        # FirefoxPlace.guid,
+                        # FirefoxPlace.recalc_alt_frecency,
+                        # FirefoxPlace.recalc_frecency,
+                        # FirefoxPlace.preview_image_url,
+                        FirefoxBookmark.position,
+                        # FirefoxPlace.rev_host,
+                        # FirefoxPlace.site_name,
+                        FirefoxBookmark.sync_change_counter,
+                        FirefoxBookmark.sync_status,
+                        # FirefoxPlace.typed,
+                        # FirefoxPlace.url_hash,
+                        # FirefoxPlace.visit_count,
+                    ),
+                },
+                "moz_places": {
+                    "FROM": (
+                        # Bookmark.id,
+                        # Bookmark.title,
+                        Bookmark.url,
+                        # Bookmark.description,
+                        # Bookmark.type,
+                        # Bookmark.parent,
+                        Bookmark.place_id,
+                        Bookmark.origin_id,
+                        # Bookmark.date_added,
+                        # Bookmark.folder_type,
+                        Bookmark.foreign_count,
+                        # Bookmark.guid,
+                        Bookmark.hidden,
+                        # Bookmark.keyword_id,
+                        # Bookmark.last_modified,
+                        Bookmark.last_visit_date,
+                        # Bookmark.origin_alt_frecency,
+                        # Bookmark.origin_frecency,
+                        # Bookmark.origin_host,
+                        # Bookmark.origin_prefix,
+                        # Bookmark.origin_recalc_alt_frecency,
+                        # Bookmark.origin_recalc_frecency,
+                        Bookmark.place_alt_frecency,
+                        Bookmark.place_frecency,
+                        Bookmark.place_guid,
+                        Bookmark.place_recalc_alt_frecency,
+                        Bookmark.place_recalc_frecency,
+                        Bookmark.preview_image_url,
+                        # Bookmark.position,
+                        Bookmark.rev_host,
+                        Bookmark.site_name,
+                        # Bookmark.sync_change_counter,
+                        # Bookmark.sync_status,
+                        Bookmark.typed,
+                        Bookmark.url_hash,
+                        Bookmark.visit_count,
+                    ),
+                    "TO": (
+                        # FirefoxBookmark.id,
+                        # FirefoxBookmark.title,
+                        FirefoxPlace.url,
+                        FirefoxPlace.description,
+                        # FirefoxBookmark.type,
+                        # FirefoxBookmark.parent,
+                        FirefoxPlace.id,
+                        FirefoxPlace.origin,
+                        # FirefoxBookmark.date_added,
+                        # FirefoxBookmark.folder_type,
+                        FirefoxPlace.foreign_count,
+                        # FirefoxBookmark.guid,
+                        FirefoxPlace.hidden,
+                        # FirefoxBookmark.keyword_id,
+                        # FirefoxBookmark.last_modified,
+                        FirefoxPlace.last_visit_date,
+                        # FirefoxOrigin.alt_frecency,
+                        # FirefoxOrigin.frecency,
+                        # FirefoxOrigin.host,
+                        # FirefoxOrigin.prefix,
+                        # FirefoxOrigin.recalc_alt_frecency,
+                        # FirefoxOrigin.recalc_frecency,
+                        FirefoxPlace.alt_frecency,
+                        FirefoxPlace.frecency,
+                        FirefoxPlace.guid,
+                        FirefoxPlace.recalc_alt_frecency,
+                        FirefoxPlace.recalc_frecency,
+                        FirefoxPlace.preview_image_url,
+                        # FirefoxBookmark.position,
+                        FirefoxPlace.rev_host,
+                        FirefoxPlace.site_name,
+                        # FirefoxBookmark.sync_change_counter,
+                        # FirefoxBookmark.sync_status,
+                        FirefoxPlace.typed,
+                        FirefoxPlace.url_hash,
+                        FirefoxPlace.visit_count,
+                    ),
+                },
             },
         }
 
@@ -429,25 +509,37 @@ class FirefoxBookmarks:
 
         bookmarks = list(
             FirefoxBookmark \
-                .select(FirefoxBookmark.guid) \
+                .select(FirefoxBookmark.guid, FirefoxBookmark.fk) \
                 .execute()
         )
         differing_bookmarks = []
 
         for bk in bookmarks:
-            original = FirefoxBookmark \
-                .select(*self._TRANSLATION["SEPARATE"]["TO"]) \
+            original_bk = FirefoxBookmark \
+                .select(*self._TRANSLATION["SEPARATE"]["moz_bookmarks"]["TO"]) \
                 .where(FirefoxBookmark.guid == bk.guid) \
                 .tuples() \
                 .first()
 
-            changed = Bookmark \
-                .select(*self._TRANSLATION["SEPARATE"]["FROM"]) \
+            changed_bk = Bookmark \
+                .select(*self._TRANSLATION["SEPARATE"]["moz_bookmarks"]["FROM"]) \
                 .where(Bookmark.guid == bk.guid) \
                 .tuples() \
                 .first()
 
-            if original != changed:
+            original_pl = FirefoxPlace \
+                .select(*self._TRANSLATION["SEPARATE"]["moz_places"]["TO"]) \
+                .where(FirefoxPlace.id == bk.fk) \
+                .tuples() \
+                .first()
+
+            changed_pl = Bookmark \
+                .select(*self._TRANSLATION["SEPARATE"]["moz_places"]["FROM"]) \
+                .where(Bookmark.guid == bk.guid) \
+                .tuples() \
+                .first()
+
+            if original_bk != changed_bk or original_pl != changed_pl:
                 differing_bookmarks.append(bk.guid)
 
         return differing_bookmarks
@@ -461,21 +553,41 @@ class FirefoxBookmarks:
 
         with self._places_database.atomic():
             for guid in diff_guids:
-                source_tuple = Bookmark \
-                    .select(*self._TRANSLATION["SEPARATE"]["FROM"]) \
+                # region moz_bookmarks
+                source_tuple_bk = Bookmark \
+                    .select(*self._TRANSLATION["SEPARATE"]["moz_bookmarks"]["FROM"]) \
                     .where(Bookmark.guid == guid) \
                     .tuples() \
                     .first()
 
-                source_dict = {
+                source_dict_bk = {
                     field: value
                     for field, value in zip(
-                        self._TRANSLATION["SEPARATE"]["TO"],
-                        source_tuple,
+                        self._TRANSLATION["SEPARATE"]["moz_bookmarks"]["TO"],
+                        source_tuple_bk,
                     )
                 }
 
-                FirefoxBookmark.replace(source_dict).execute()
+                FirefoxBookmark.replace(source_dict_bk).execute()
+                # endregion
+
+                # region moz_places
+                source_tuple_pl = Bookmark \
+                    .select(*self._TRANSLATION["SEPARATE"]["moz_places"]["FROM"]) \
+                    .where(Bookmark.guid == guid) \
+                    .tuples() \
+                    .first()
+
+                source_dict_pl = {
+                    field: value
+                    for field, value in zip(
+                        self._TRANSLATION["SEPARATE"]["moz_places"]["TO"],
+                        source_tuple_pl,
+                    )
+                }
+
+                FirefoxPlace.replace(source_dict_pl).execute()
+                # endregion
 
     def _back_up_places(self):
         file_name = f"backup-{int(time())}.sqlite"
@@ -488,7 +600,6 @@ class FirefoxBookmarks:
         self._places_database.close()
         self._database.close()
         os.remove(self._db_path)
-        # TODO: Also remove old backups
 
     def restore_latest_backup(self):
         """Finds the latest backup and copies it to the Places database"""
