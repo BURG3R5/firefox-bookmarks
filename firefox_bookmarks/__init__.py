@@ -97,7 +97,7 @@ class FirefoxBookmarks:
 
         diff: Generates diff between current state and the original Places database
         commit: Commits the updated bookmarks to the Places database
-        restore_latest_backup: Finds the latest backup and copies it to the Places database
+        restore_backup: Finds the ith latest backup and copies it to the Places database
     """
 
     def __init__(self):
@@ -601,13 +601,19 @@ class FirefoxBookmarks:
         self._database.close()
         os.remove(self._db_path)
 
-    def restore_latest_backup(self):
-        """Finds the latest backup and copies it to the Places database"""
+    def restore_backup(self, *, index=0):
+        """Finds the latest backup and copies it to the Places database
+
+        Args:
+            index: Index of backup to restore when sorted in a descending \
+            order. Defaults to 0 (which refers to the latest backup).
+        """
 
         dir_path, timestamps = self._get_backups()
+        timestamps.sort(reverse=True)
         backup_path = os.path.join(
             dir_path,
-            f"backup-{max(timestamps)}.sqlite",
+            f"backup-{timestamps[index]}.sqlite",
         )
         shutil.copy(backup_path, self._places_path)
 
