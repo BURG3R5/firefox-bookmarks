@@ -266,7 +266,7 @@ class FirefoxBookmarks:
                         # Bookmark.id,
                         # Bookmark.title,
                         Bookmark.url,
-                        # Bookmark.description,
+                        Bookmark.description,
                         # Bookmark.type,
                         # Bookmark.parent,
                         Bookmark.place_id,
@@ -572,21 +572,30 @@ class FirefoxBookmarks:
                 # endregion
 
                 # region moz_places
-                source_tuple_pl = Bookmark \
-                    .select(*self._TRANSLATION["SEPARATE"]["moz_places"]["FROM"]) \
+                place_guid = Bookmark \
+                    .select(Bookmark.place_guid) \
                     .where(Bookmark.guid == guid) \
-                    .tuples() \
-                    .first()
+                    .scalar()
 
-                source_dict_pl = {
-                    field: value
-                    for field, value in zip(
-                        self._TRANSLATION["SEPARATE"]["moz_places"]["TO"],
-                        source_tuple_pl,
-                    )
-                }
+                if place_guid is not None:
+                    source_tuple_pl = Bookmark \
+                        .select(*self._TRANSLATION["SEPARATE"]["moz_places"]["FROM"]) \
+                        .where(Bookmark.place_guid == place_guid) \
+                        .tuples() \
+                        .first()
 
-                FirefoxPlace.replace(source_dict_pl).execute()
+                    source_dict_pl = {
+                        field: value
+                        for field, value in zip(
+                            self._TRANSLATION["SEPARATE"]["moz_places"]["TO"],
+                            source_tuple_pl,
+                        )
+                    }
+
+                    FirefoxPlace \
+                        .update(source_dict_pl) \
+                        .where(FirefoxPlace.guid == place_guid) \
+                        .execute()
                 # endregion
 
     def _back_up_places(self):
