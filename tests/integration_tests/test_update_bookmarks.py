@@ -11,7 +11,7 @@ def test_update_bookmarks(golden_file):
         where=Bookmark.url.contains("mozilla.org"),
         data={
             Bookmark.title: "<updated> " + Bookmark.title,
-            Bookmark.url: fn.REPLACE(Bookmark.url, "https", "http"),
+            Bookmark.url: fn.TRIM(Bookmark.url, "/"),
         },
     )
     fb.commit()
@@ -20,6 +20,8 @@ def test_update_bookmarks(golden_file):
     fb.connect()
     bookmarks = fb.bookmarks(where=Bookmark.url.contains("mozilla.org"))
     bookmark_reprs = set(repr(bkmk) for bkmk in bookmarks)
+    fb.restore_backup()
+    fb.disconnect()
 
     assert count_updated == 5
     assert bookmark_reprs == set(golden_file.splitlines())
