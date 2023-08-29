@@ -627,7 +627,10 @@ class FirefoxBookmarks:
                     )
                 }
 
-                FirefoxBookmark.replace(source_dict_bk).execute()
+                FirefoxBookmark \
+                    .update(source_dict_bk) \
+                    .where(FirefoxBookmark.guid == guid) \
+                    .execute()
                 # endregion
 
                 # region moz_places
