@@ -64,7 +64,7 @@ from peewee import (
 )
 
 from .bookmark import Bookmark, connect_bookmark_model
-from .constants import BATCH_SIZE, BOOKMARK_TYPE, FOLDER_TYPE, ProfileCriterion
+from .constants import BATCH_SIZE, FirefoxEntity, ProfileCriterion
 from .locate import locate_db
 from .models import FirefoxBookmark, FirefoxOrigin, FirefoxPlace, connect_firefox_models
 
@@ -485,7 +485,7 @@ class FirefoxBookmarks:
             Iterable of bookmarks matching the SELECT query
         """
 
-        final_where: Expression = (Bookmark.type == BOOKMARK_TYPE)
+        final_where: Expression = (Bookmark.type == FirefoxEntity.BOOKMARK)
         if where is not None:
             final_where &= where
 
@@ -507,7 +507,7 @@ class FirefoxBookmarks:
             Iterable of folders matching the SELECT query
         """
 
-        final_where: Expression = (Bookmark.type == FOLDER_TYPE)
+        final_where: Expression = (Bookmark.type == FirefoxEntity.FOLDER)
         if where is not None:
             final_where &= where
 
@@ -703,4 +703,5 @@ __all__ = [
     'FirefoxBookmarks',
     'Bookmark',  # For convenience
     'ProfileCriterion',  # For convenience
+    'FirefoxEntity',  # For convenience
 ]
