@@ -491,7 +491,7 @@ class FirefoxBookmarks:
             Iterable of bookmarks matching the SELECT query
         """
 
-        final_where: Expression = (Bookmark.type == FirefoxEntity.BOOKMARK)
+        final_where = (Bookmark.type == FirefoxEntity.BOOKMARK.value)
         if where is not None:
             final_where &= where
 
@@ -519,7 +519,7 @@ class FirefoxBookmarks:
             Iterable of folders matching the SELECT query
         """
 
-        final_where: Expression = (Bookmark.type == FirefoxEntity.FOLDER)
+        final_where: Expression = (Bookmark.type == FirefoxEntity.FOLDER.value)
         if where is not None:
             final_where &= where
 

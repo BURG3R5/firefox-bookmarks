@@ -84,12 +84,12 @@ class Bookmark(Model):
     @property
     def is_bookmark(self) -> bool:
         """Returns whether the object represents a bookmark"""
-        return self.type == FirefoxEntity.BOOKMARK
+        return self.type == FirefoxEntity.BOOKMARK.value
 
     @property
     def is_folder(self) -> bool:
         """Returns whether the object represents a folder"""
-        return self.type == FirefoxEntity.FOLDER
+        return self.type == FirefoxEntity.FOLDER.value
 
     def __str__(self) -> str:
         return str(self.title or ".")
