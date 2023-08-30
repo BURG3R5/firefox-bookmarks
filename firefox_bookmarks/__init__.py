@@ -433,12 +433,14 @@ class FirefoxBookmarks:
         *,
         fields: Iterable[Field] = [],
         where: Expression | None = None,
+        limit: int | None = None,
     ) -> Iterable[Bookmark]:
         """Executes a SELECT query
 
         Args:
             fields: Iterable of fields to select. Defaults to all.
             where: An `Expression` used in the WHERE clause. Defaults to `None`.
+            limit: Value to use in the LIMIT clause. Defaults to `None`.
 
         Returns:
             Iterable of bookmarks and folders matching the SELECT query
@@ -448,6 +450,8 @@ class FirefoxBookmarks:
 
         if where is not None:
             selected = selected.where(where)
+        if limit is not None:
+            selected = selected.limit(limit)
 
         return selected.execute()
 
@@ -474,12 +478,14 @@ class FirefoxBookmarks:
         *,
         fields: Iterable[Field] = [],
         where: Expression | None = None,
+        limit: int | None = None,
     ) -> Iterable[Bookmark]:
         """Executes a SELECT query over only the rows representing bookmarks
 
         Args:
             fields: Iterable of fields to select. Defaults to all.
             where: An `Expression` used in the WHERE clause. Defaults to `None`.
+            limit: Value to use in the LIMIT clause. Defaults to `None`.
 
         Returns:
             Iterable of bookmarks matching the SELECT query
@@ -489,19 +495,25 @@ class FirefoxBookmarks:
         if where is not None:
             final_where &= where
 
-        return Bookmark.select(*fields).where(final_where).execute()
+        return Bookmark \
+            .select(*fields) \
+            .where(final_where) \
+            .limit(limit) \
+            .execute()
 
     def folders(
         self,
         *,
         fields: Iterable[Field] = [],
         where: Expression | None = None,
+        limit: int | None = None,
     ) -> Iterable[Bookmark]:
         """Executes a SELECT query over only the rows representing folders
 
         Args:
             fields: Iterable of fields to select. Defaults to all.
             where: An `Expression` used in the WHERE clause. Defaults to `None`.
+            limit: Value to use in the LIMIT clause. Defaults to `None`.
 
         Returns:
             Iterable of folders matching the SELECT query
@@ -511,7 +523,11 @@ class FirefoxBookmarks:
         if where is not None:
             final_where &= where
 
-        return Bookmark.select(*fields).where(final_where).execute()
+        return Bookmark \
+            .select(*fields) \
+            .where(final_where) \
+            .limit(limit) \
+            .execute()
 
     def str_update(
         self,
