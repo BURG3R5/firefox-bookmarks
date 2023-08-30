@@ -14,23 +14,21 @@ jobs:
         id: checkout
         uses: actions/checkout@v3
 
+      - name: Install Poetry
+        id: install-poetry
+        uses: snok/install-poetry@v1
+
       - name: Setup Python
         id: setup-python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-
-      - name: Install Poetry
-        id: install-poetry
-        uses: snok/install-poetry@v1
+          cache: "poetry"
 
       - name: Install dependencies
         id: poetry-install
-        run: |
-          poetry config virtualenvs.in-project true
-          poetry install --no-interaction
+        run: poetry install --no-interaction
 
       - name: Run pre-commit hooks
         id: run-hooks
-        run: |
-          poetry run pre-commit run --all-files
+        run: poetry run pre-commit run --all-files
