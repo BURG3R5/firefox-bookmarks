@@ -5,11 +5,10 @@ from firefox_bookmarks import *
 fb = FirefoxBookmarks()
 fb.connect(criterion=ProfileCriterion.LARGEST)
 
-count_updated = fb.update(
+count_updated = fb.str_update(
+    field=Bookmark.title,
     where=Bookmark.title.contains("Wikikipedia"),
-    data={
-        Bookmark.title: fn.REPLACE(Bookmark.title, "Wikikipedia", "Wikipedia"),
-    },
+    updated=fn.REPLACE(Bookmark.title, "Wikikipedia", "Wikipedia"),
 )
 
 fb.commit()

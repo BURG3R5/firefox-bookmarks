@@ -12,5 +12,5 @@ This directory contains demonstrative scripts that showcase the package capabili
 
   - `execute_sql` - Use low-level API to connect to the db, and then execute a SQL query string
   - `models` - Use mid-level API to connect `peewee` models to the db, then use the ORM
-  - `the_easy_way` - Use high-level API to connect to the db, then simply use the `.update` method
+  - `the_easy_way` - Use high-level API to connect to the db, then simply use the `.str_update` method
   - `revert` - Revert the changes made by the above three scripts
