@@ -1,5 +1,21 @@
 # Change Log
 
+## [1.1.0](https://github.com/BURG3R5/firefox-bookmarks/releases/tag/1.1.0) - 2023-08-30
+
+### Added
+
+- Added `.str_update` and `.num_update` methods for type-checking ease
+- Added integration tests and CI workflow for them
+
+### Changed
+
+- Made `.restore_backup` more customizable
+- Included `poetry.lock` to pin dependencies
+
+### Fixed
+
+- Ensured `moz_places` is updated on commit
+
 ## [1.0.0](https://github.com/BURG3R5/firefox-bookmarks/releases/tag/1.0.0) - 2023-07-30
 
 ### Added
