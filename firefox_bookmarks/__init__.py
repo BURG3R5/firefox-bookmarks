@@ -42,6 +42,7 @@ Copyright (C) 2023 Aditya Rajput & other contributors
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import os
 import shutil
 from tempfile import gettempdir
@@ -64,7 +65,7 @@ from peewee import (
 )
 
 from .bookmark import Bookmark, connect_bookmark_model
-from .constants import BATCH_SIZE, FirefoxEntity, ProfileCriterion
+from .constants import BATCH_SIZE, DEFAULT_FOLDER_GUID, FirefoxEntity, ProfileCriterion
 from .locate import locate_db
 from .models import FirefoxBookmark, FirefoxOrigin, FirefoxPlace, connect_firefox_models
 
@@ -428,6 +429,55 @@ class FirefoxBookmarks:
                     fields=self._TRANSLATION["COMBINE"]["TO"],
                 ).execute()
 
+    def create(
+        self,
+        *,
+        entity_type: FirefoxEntity,
+        title: str,
+        url: str | None = None,
+        parent: Bookmark | None = None,
+        position: int | None = None,
+    ) -> Bookmark | None:
+        """Creates a new bookmark or folder under `parent`
+
+        Args:
+            entity_type: Type of entity to create
+            title: Title of bookmark or folder
+            url: URL of resource the bookmark is leading to. Defaults to `None`.
+            parent: Folder under which to create the bookmark. Defaults to \
+            "Other Bookmarks".
+
+        Returns:
+            Newly created bookmark or folder
+        """
+
+        if parent is None:
+            parent = Bookmark.get(Bookmark.guid == DEFAULT_FOLDER_GUID)
+
+        # region erroneous-inputs
+        if (entity_type == FirefoxEntity.BOOKMARK) ^ (url is not None):
+            if url is None:
+                logging.error("Bookmark needs a URL")
+            if url is not None:
+                logging.error("Folder cannot have a URL")
+            return None
+
+        if not parent.is_folder:
+            logging.error("`parent` should be a folder")
+            return None
+        # endregion
+
+        return Bookmark.create(
+            type=entity_type.value,
+            title=title,
+            parent=parent,
+            url=url,
+            position=position,
+            guid=guid,
+            sync_status=sync_status,
+            # TODO: Add other fields
+        )
+
     def select(
         self,
         *,
@@ -574,6 +624,49 @@ class FirefoxBookmarks:
             where=where,
             data={field: updated},
         )
+
+    def move(
+        self,
+        *,
+        bookmarks: Expression | None,
+        source: Expression | None,
+        destination: Expression,
+    ) -> int:
+        """Moves `bookmarks` from `source` to `destination`.
+
+        Either `source` or `bookmarks` must be specified. `source` and \
+        `destination` are the criteria with which to search for the \
+        respective folders. The first folder matching the corresponding \
+        criterion will be chosen.
+
+        Args:
+            bookmarks: Which bookmarks are to be moved. Defaults to `None`.
+            source: Criteria for the source folder. The first folder that \
+            matches this query will be used. Defaults to `None`.
+            destination: Criteria for the destination folder. The first \
+            folder that matches this query will be used.
+
+        Returns:
+            Number of rows affected by the update
+        """
+
+        if (bookmarks is None) and (source is None):
+            logging.error("Either `source` or `bookmarks` must be specified.")
+            return 0
+
+        source_folder = None
+        if source is not None:
+            source_folder = self.folders(
+                fields=(Bookmark.id, ),
+                where=source,
+                limit=1,
+            ).scalar()
+
+        destination_folder = self.folders(
+            fields=(Bookmark.id, ),
+            where=destination,
+            limit=1,
+        ).scalar()
 
     def diff(self) -> list[str]:
         """Generates diff between current state of our duplicate database, and the chosen Places database

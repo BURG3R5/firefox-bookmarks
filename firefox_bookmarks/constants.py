@@ -20,6 +20,7 @@ class FirefoxEntity(Enum):
 
 
 BATCH_SIZE = 100
+DEFAULT_FOLDER_GUID = "unfiled_____"
 
 __all__ = [
     'ProfileCriterion',
