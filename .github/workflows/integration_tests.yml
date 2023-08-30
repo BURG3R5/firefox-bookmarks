@@ -1,0 +1,91 @@
+name: integration tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+jobs:
+  run-on-ubuntu:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup firefox
+        id: setup-firefox
+        uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: latest
+
+      - name: Run Firefox for the first time to init the default profile
+        id: run-firefox
+        run: |
+          firefox --headless --no-sandbox --disable-gpu https://www.example.com &
+          sleep 10
+          pkill -f firefox
+
+      - name: Checkout code
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Install Poetry
+        id: install-poetry
+        uses: snok/install-poetry@v1
+
+      - name: Setup Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: "poetry"
+
+      - name: Install dependencies
+        id: poetry-install
+        run: poetry install --no-interaction
+
+      - name: Run tests
+        id: integration-tests
+        run: |
+          poetry run pytest --ignore=tests/unit_tests/
+
+  run-on-macos:
+    if: ${{ false }}
+    runs-on: macos-latest
+    steps:
+      - name: Setup firefox
+        id: setup-firefox
+        uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: latest
+
+      - name: Run Firefox for the first time to init the default profile
+        id: run-firefox
+        run: |
+          firefox --headless --no-sandbox --disable-gpu https://www.example.com &
+          sleep 10
+          pkill -f firefox
+
+      - name: Checkout code
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Install Poetry
+        id: install-poetry
+        uses: snok/install-poetry@v1
+
+      - name: Setup Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: "poetry"
+
+      - name: Install dependencies
+        id: poetry-install
+        run: poetry install --no-interaction
+
+      - name: Run tests
+        id: integration-tests
+        run: |
+          poetry run pytest --ignore=tests/unit_tests/

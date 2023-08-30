@@ -1,0 +1,43 @@
+name: formatting
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Install Poetry
+        id: install-poetry
+        uses: snok/install-poetry@v1
+
+      - name: Setup Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: "poetry"
+
+      - name: Install dependencies
+        id: poetry-install
+        run: poetry install --no-interaction
+
+      - name: Set up pre-commit cache
+        uses: actions/cache@v3
+        if: startsWith(runner.os, 'Linux')
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: pre-commit-${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-
+
+      - name: Run pre-commit hooks
+        id: run-hooks
+        run: poetry run pre-commit run --all-files
