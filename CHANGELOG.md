@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.2.0](https://github.com/BURG3R5/firefox-bookmarks/releases/tag/1.2.0) - 2024-07-05
+
+### Added
+
+- Added a read-only mode for users with DB-locking issues
+
 ## [1.1.0](https://github.com/BURG3R5/firefox-bookmarks/releases/tag/1.1.0) - 2023-08-30
 
 ### Added
