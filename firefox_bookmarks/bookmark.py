@@ -1,6 +1,6 @@
 from peewee import SQL, ForeignKeyField, IntegerField, Model, SqliteDatabase, TextField
 
-from .constants import BOOKMARK_TYPE, FOLDER_TYPE
+from .constants import FirefoxEntity
 
 database_obj = SqliteDatabase(None)
 
@@ -84,12 +84,12 @@ class Bookmark(Model):
     @property
     def is_bookmark(self) -> bool:
         """Returns whether the object represents a bookmark"""
-        return self.type == BOOKMARK_TYPE
+        return self.type == FirefoxEntity.BOOKMARK.value
 
     @property
     def is_folder(self) -> bool:
         """Returns whether the object represents a folder"""
-        return self.type == FOLDER_TYPE
+        return self.type == FirefoxEntity.FOLDER.value
 
     def __str__(self) -> str:
         return str(self.title or ".")

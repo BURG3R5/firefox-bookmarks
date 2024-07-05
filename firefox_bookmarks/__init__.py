@@ -42,6 +42,7 @@ Copyright (C) 2023 Aditya Rajput & other contributors
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import os
 import shutil
 from tempfile import gettempdir
@@ -64,7 +65,7 @@ from peewee import (
 )
 
 from .bookmark import Bookmark, connect_bookmark_model
-from .constants import BATCH_SIZE, BOOKMARK_TYPE, FOLDER_TYPE, ProfileCriterion
+from .constants import BATCH_SIZE, DEFAULT_FOLDER_GUID, FirefoxEntity, ProfileCriterion
 from .locate import locate_db
 from .models import FirefoxBookmark, FirefoxOrigin, FirefoxPlace, connect_firefox_models
 
@@ -433,17 +434,68 @@ class FirefoxBookmarks:
                     fields=self._TRANSLATION["COMBINE"]["TO"],
                 ).execute()
 
+    def create(
+        self,
+        *,
+        entity_type: FirefoxEntity,
+        title: str,
+        url: str | None = None,
+        parent: Bookmark | None = None,
+        position: int | None = None,
+    ) -> Bookmark | None:
+        """Creates a new bookmark or folder under `parent`
+
+        Args:
+            entity_type: Type of entity to create
+            title: Title of bookmark or folder
+            url: URL of resource the bookmark is leading to. Defaults to `None`.
+            parent: Folder under which to create the bookmark. Defaults to \
+            "Other Bookmarks".
+
+        Returns:
+            Newly created bookmark or folder
+        """
+
+        if parent is None:
+            parent = Bookmark.get(Bookmark.guid == DEFAULT_FOLDER_GUID)
+
+        # region erroneous-inputs
+        if (entity_type == FirefoxEntity.BOOKMARK) ^ (url is not None):
+            if url is None:
+                logging.error("Bookmark needs a URL")
+            if url is not None:
+                logging.error("Folder cannot have a URL")
+            return None
+
+        if not parent.is_folder:
+            logging.error("`parent` should be a folder")
+            return None
+        # endregion
+
+        return Bookmark.create(
+            type=entity_type.value,
+            title=title,
+            parent=parent,
+            url=url,
+            position=position,
+            guid=guid,
+            sync_status=sync_status,
+            # TODO: Add other fields
+        )
+
     def select(
         self,
         *,
         fields: Iterable[Field] = [],
         where: Expression | None = None,
+        limit: int | None = None,
     ) -> Iterable[Bookmark]:
         """Executes a SELECT query
 
         Args:
             fields: Iterable of fields to select. Defaults to all.
             where: An `Expression` used in the WHERE clause. Defaults to `None`.
+            limit: Value to use in the LIMIT clause. Defaults to `None`.
 
         Returns:
             Iterable of bookmarks and folders matching the SELECT query
@@ -453,6 +505,8 @@ class FirefoxBookmarks:
 
         if where is not None:
             selected = selected.where(where)
+        if limit is not None:
+            selected = selected.limit(limit)
 
         return selected.execute()
 
@@ -479,44 +533,56 @@ class FirefoxBookmarks:
         *,
         fields: Iterable[Field] = [],
         where: Expression | None = None,
+        limit: int | None = None,
     ) -> Iterable[Bookmark]:
         """Executes a SELECT query over only the rows representing bookmarks
 
         Args:
             fields: Iterable of fields to select. Defaults to all.
             where: An `Expression` used in the WHERE clause. Defaults to `None`.
+            limit: Value to use in the LIMIT clause. Defaults to `None`.
 
         Returns:
             Iterable of bookmarks matching the SELECT query
         """
 
-        final_where: Expression = (Bookmark.type == BOOKMARK_TYPE)
+        final_where = (Bookmark.type == FirefoxEntity.BOOKMARK.value)
         if where is not None:
             final_where &= where
 
-        return Bookmark.select(*fields).where(final_where).execute()
+        return Bookmark \
+            .select(*fields) \
+            .where(final_where) \
+            .limit(limit) \
+            .execute()
 
     def folders(
         self,
         *,
         fields: Iterable[Field] = [],
         where: Expression | None = None,
+        limit: int | None = None,
     ) -> Iterable[Bookmark]:
         """Executes a SELECT query over only the rows representing folders
 
         Args:
             fields: Iterable of fields to select. Defaults to all.
             where: An `Expression` used in the WHERE clause. Defaults to `None`.
+            limit: Value to use in the LIMIT clause. Defaults to `None`.
 
         Returns:
             Iterable of folders matching the SELECT query
         """
 
-        final_where: Expression = (Bookmark.type == FOLDER_TYPE)
+        final_where: Expression = (Bookmark.type == FirefoxEntity.FOLDER.value)
         if where is not None:
             final_where &= where
 
-        return Bookmark.select(*fields).where(final_where).execute()
+        return Bookmark \
+            .select(*fields) \
+            .where(final_where) \
+            .limit(limit) \
+            .execute()
 
     def str_update(
         self,
@@ -563,6 +629,49 @@ class FirefoxBookmarks:
             where=where,
             data={field: updated},
         )
+
+    def move(
+        self,
+        *,
+        bookmarks: Expression | None,
+        source: Expression | None,
+        destination: Expression,
+    ) -> int:
+        """Moves `bookmarks` from `source` to `destination`.
+
+        Either `source` or `bookmarks` must be specified. `source` and \
+        `destination` are the criteria with which to search for the \
+        respective folders. The first folder matching the corresponding \
+        criterion will be chosen.
+
+        Args:
+            bookmarks: Which bookmarks are to be moved. Defaults to `None`.
+            source: Criteria for the source folder. The first folder that \
+            matches this query will be used. Defaults to `None`.
+            destination: Criteria for the destination folder. The first \
+            folder that matches this query will be used.
+
+        Returns:
+            Number of rows affected by the update
+        """
+
+        if (bookmarks is None) and (source is None):
+            logging.error("Either `source` or `bookmarks` must be specified.")
+            return 0
+
+        source_folder = None
+        if source is not None:
+            source_folder = self.folders(
+                fields=(Bookmark.id, ),
+                where=source,
+                limit=1,
+            ).scalar()
+
+        destination_folder = self.folders(
+            fields=(Bookmark.id, ),
+            where=destination,
+            limit=1,
+        ).scalar()
 
     def diff(self) -> list[str]:
         """Generates diff between current state of our duplicate database, and the chosen Places database
@@ -708,4 +817,5 @@ __all__ = [
     'FirefoxBookmarks',
     'Bookmark',  # For convenience
     'ProfileCriterion',  # For convenience
+    'FirefoxEntity',  # For convenience
 ]
