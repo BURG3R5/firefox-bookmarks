@@ -97,6 +97,7 @@ def connect_firefox_models(
     *,
     look_under_path: str | None = None,
     criterion: ProfileCriterion = ProfileCriterion.LATEST,
+    readonly: bool = False,
 ):
     """Connects `Firefox*` models to a Places database according to the chosen criterion
 
@@ -105,6 +106,8 @@ def connect_firefox_models(
         If not supplied, looks under default profiles directory.
         criterion: Which profile to choose, in case there are multiple. \
         Defaults to `ProfileCriterion.LATEST`.
+        readonly: If `True`, connects to a temporary duplicate of the \
+        database, which will not be synced with the original. Defaults to `False`.
     """
     from .connect import connect_to_places_db
 
@@ -112,6 +115,7 @@ def connect_firefox_models(
         database=database_obj,
         look_under_path=look_under_path,
         criterion=criterion,
+        readonly=readonly,
     )
 
 

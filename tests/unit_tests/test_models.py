@@ -23,6 +23,7 @@ class TestConnectFirefoxModels:
             database=database_obj,
             look_under_path=my_path,
             criterion=my_criterion,
+            readonly=False,
         )
 
 

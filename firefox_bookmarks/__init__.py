@@ -360,6 +360,7 @@ class FirefoxBookmarks:
         *,
         look_under_path: str | None = None,
         criterion: ProfileCriterion = ProfileCriterion.LATEST,
+        readonly: bool = False,
     ):
         """Duplicates a Places database (chosen according to `criterion`) and connects the `Bookmark` model to it
 
@@ -368,6 +369,9 @@ class FirefoxBookmarks:
             If not supplied, looks under default profiles directory.
             criterion: Which profile to choose, in case there are multiple. \
             Defaults to `ProfileCriterion.LATEST`.
+            readonly: If `True`, any changes made will not be synced with \
+            the original database. Use if encountering a "database locked" \
+            error. Defaults to `False`.
         """
 
         # Connect old models
@@ -380,6 +384,7 @@ class FirefoxBookmarks:
         connect_firefox_models(
             look_under_path=look_under_path,
             criterion=criterion,
+            readonly=readonly,
         )
 
         # Connect new model
